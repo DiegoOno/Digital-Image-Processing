@@ -1,15 +1,17 @@
 import cv2
 import numpy as np
-import math
-import sys
-import os
+import argparse
 
 def main():
-  image_path = sys.argv[1]
-  img = cv2.imread(image_path)
-  grayImage = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-  cv2.imshow('Image', grayImage)
+  # np.set_printoptions(threshold=sys.maxsize)
+  ap = argparse.ArgumentParser()
+  ap.add_argument('-i', '--image', required=True,
+    help='path to input image')
+  args = vars(ap.parse_args())
+  img = cv2.imread(args['image'])
+  
+  cv2.imshow('Orginal', img)
+   
   cv2.waitKey(0)
   cv2.destroyAllWindows()
 
