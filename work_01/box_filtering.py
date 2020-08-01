@@ -5,7 +5,7 @@ import argparse
 def calculate_box_size(img_shape, reduction_percent):
   box_height = int(img_shape[0] / (img_shape[0] * (reduction_percent / 100)))
   box_width = int(img_shape[1] / (img_shape[1] * (reduction_percent / 100)))
-  box = np.ones((box_height, box_width)) * (1 / 9)
+  box = np.ones((box_height, box_width)) * (1 / (box_height * box_width))
   return box
 
 def box_filtering(img, reduction_percent):
