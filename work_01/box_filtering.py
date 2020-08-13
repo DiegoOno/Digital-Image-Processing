@@ -5,7 +5,7 @@ import argparse
 def calculate_box_size(img_shape, reduction_percent):
   box_height = int(img_shape[0] / (img_shape[0] * (reduction_percent / 100)))
   box_width = int(img_shape[1] / (img_shape[1] * (reduction_percent / 100)))
-  box = np.ones((box_height, box_width)) * (1 / (box_height * box_width))
+  box = (box_height, box_height)
   return box
 
 def box_filtering(img, reduction_percent):
@@ -20,13 +20,13 @@ def box_filtering(img, reduction_percent):
 
   for i in range(0, new_image.shape[0]):
     for j in range(0, new_image.shape[1] - 1):
-      crop = img[line:line + box.shape[0], col: col + box.shape[1]]
-      col = col + box.shape[1]
+      crop = img[line:line + box[0], col: col + box[1]]
+      col = col + box[1]
       
-      new_image[i][j] = np.sum(np.multiply(crop, box))
+      new_image[i][j] = np.sum(crop) / (box[0] * box[1])
     
     col = 0
-    line = line + box.shape[0]
+    line = line + box[0]
   
   return np.uint8(new_image)
 
@@ -46,6 +46,7 @@ def main():
 
   new_image = box_filtering(img, int(args['reduction']))
   cv2.imshow('Box filter image', new_image)
+  cv2.imwrite('out.jpg', new_image)
   cv2.waitKey(0)
   cv2.destroyAllWindows()
 
