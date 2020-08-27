@@ -3,7 +3,7 @@ import numpy as np
 import argparse
 import sys
 
-def gaussian_filter(shape=(3,3),sigma=0.5):
+def gaussian_filter(shape=(5,5),sigma=0.5):
   m,n = [(ss-1.)/2. for ss in shape]
   y,x = np.ogrid[-m:m+1,-n:n+1]
   h = np.exp( -(x*x + y*y) / (2.*sigma*sigma) )
@@ -30,12 +30,19 @@ def main():
   gauss_mask = gaussian_filter()
   gauss_convolved = cv2.filter2D(img, -1, gauss_mask)
 
-  high_boost_mask = cv2.absdiff(img, gauss_convolved)
-  high_boost_mask = np.uint8(high_boost_mask * weight)
+  img = np.int16(img)
+  gauss_convolved = np.int16(gauss_convolved)
 
+  high_boost_mask = (img - gauss_convolved) * weight
+  
   # g(x, y) = f(x, y) + k * Gmask(x, y)
-  high_boost_image = cv2.add(img, high_boost_mask)
-  high_boost_image = np.uint8(high_boost_image)
+  high_boost_image = img + high_boost_mask
+  high_boost_image = np.uint8(np.clip(high_boost_image, 0, 255))
+
+  # Turning back original image, gauss_convolved and high_boost_mask to type uint8
+  img = np.uint8(img)
+  gauss_convolved = np.uint8(gauss_convolved)
+  high_boost_mask = np.uint8(high_boost_mask)
 
   # cv2.imwrite(image_name + '_m2.jpg', new_image)
   cv2.imshow('Original Image', img)
