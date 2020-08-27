@@ -30,11 +30,11 @@ def main():
   gauss_mask = gaussian_filter()
   gauss_convolved = cv2.filter2D(img, -1, gauss_mask)
 
-  high_boost_mask = img - gauss_convolved
-  print(high_boost_mask)
+  high_boost_mask = cv2.absdiff(img, gauss_convolved)
+  high_boost_mask = np.uint8(high_boost_mask * weight)
 
   # g(x, y) = f(x, y) + k * Gmask(x, y)
-  high_boost_image = np.add(img, high_boost_mask)
+  high_boost_image = cv2.add(img, high_boost_mask)
   high_boost_image = np.uint8(high_boost_image)
 
   # cv2.imwrite(image_name + '_m2.jpg', new_image)
