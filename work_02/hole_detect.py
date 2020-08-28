@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import argparse
 import sys
-        
+
 def main():
   np.set_printoptions(threshold=sys.maxsize)
   ap = argparse.ArgumentParser()
